@@ -1,0 +1,22 @@
+{
+  "verbose": false,
+  "debug": false,
+  "exec": "esno  ./server/index.ts",
+  "ignore": [
+    "mochawesome-report",
+    "node_modules",
+    "./test",
+    "**/*.d.ts",
+    "*.test.ts",
+    "*.spec.ts",
+    "fixtures/*",
+    "test/**/*",
+    "docs/*"
+  ],
+  "events": {
+    "restart": ""
+  },
+  "watch": ["./server"],
+  "ext": "ts tsx js jsx",
+  "inspect": true
+}
