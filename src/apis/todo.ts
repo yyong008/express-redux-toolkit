@@ -1,7 +1,7 @@
 import qs from "qs";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const todoApi = createApi({
+export const todoApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:9899",
     prepareHeaders: (headers) => {
@@ -12,6 +12,7 @@ const todoApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Todo"],
   endpoints: (build) => ({
     getTodo: build.query({
       query: (id) => `/todo/${id}`,
@@ -19,7 +20,7 @@ const todoApi = createApi({
     }),
     getTodos: build.query({
       query: () => "/todos",
-      // transformResponse: (response: { data }) => response.data,
+      providesTags: ['Todo']
     }),
     addTodo: build.mutation({
       query(todo) {
@@ -43,6 +44,7 @@ const todoApi = createApi({
           undo();
         }
       },
+      invalidatesTags: ['Todo']
     }),
     delTodo: build.mutation({
       query(todo) {
@@ -75,6 +77,7 @@ const todoApi = createApi({
           undo();
         }
       },
+      invalidatesTags: ['Todo']
     }),
     updateTodo: build.mutation({
       query(todo) {
@@ -102,6 +105,7 @@ const todoApi = createApi({
           undo();
         }
       },
+      invalidatesTags: ['Todo']
     }),
   }),
 });

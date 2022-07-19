@@ -2,10 +2,17 @@ import { Component } from "react";
 
 import { connect } from "react-redux";
 
-import { api } from "../../apis"
+import { noStoreApi } from "@/apis/nostore"
+import { QueryDefinition, BaseQueryFn, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta, MutationDefinition } from "@reduxjs/toolkit/dist/query";
+import { RootState } from "@reduxjs/toolkit/dist/query/core/apiState";
 
-class AboutComp extends Component {
-    constructor(props) {
+interface AboutCompProps {
+    getData: () => any;
+    setData: (data: any) => any;
+    data: any;
+}
+class AboutComp extends Component<AboutCompProps, any> {
+    constructor(props: AboutCompProps) {
         super(props)
         this.onSubmit = this.onSubmit.bind(this)
     }
@@ -57,16 +64,16 @@ class AboutComp extends Component {
     }
 }
 
-const mapState = (state) => {
+const mapState = (state: RootState<{ getNoStore: QueryDefinition<any, BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta>, "NoStore", any, "api">; setNoStore: MutationDefinition<any, BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta>, "NoStore", any, "api">; }, "NoStore", "api">) => {
     return {
-        data: api.endpoints.getNoStore.select()(state)
+        data: noStoreApi.endpoints.getNoStore.select("")(state)
     }
 }
 
-const mapDispatch = (_dispatch) => {
+const mapDispatch = () => {
     return {
-        getData: api.endpoints.getNoStore.initiate,
-        setData: api.endpoints.setNoStore.initiate,
+        getData: noStoreApi.endpoints.getNoStore.initiate,
+        setData: noStoreApi.endpoints.setNoStore.initiate,
     }
 }
 

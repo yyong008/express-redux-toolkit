@@ -1,7 +1,7 @@
 import { useGetNoStoreQuery, useSetNoStoreMutation } from "../../apis/nostore";
 
 function App() {
-    const { data, isFetching, isLoading, error } = useGetNoStoreQuery();
+    const { data, isFetching, isLoading, error } = useGetNoStoreQuery({});
     const [updateNoStore, result] = useSetNoStoreMutation();
 
     const onSubmit = async (e) => {

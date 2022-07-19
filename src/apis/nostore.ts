@@ -1,7 +1,7 @@
 import qs from "qs";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const noStoreApi = createApi({
+export const noStoreApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:9899",
     prepareHeaders: (headers) => {
@@ -12,10 +12,12 @@ const noStoreApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['NoStore'],
   endpoints: (build) => ({
     getNoStore: build.query({
       query: () => "query-nostore",
       transformResponse: (response: any) => response.data,
+      providesTags: ['NoStore']
     }),
     setNoStore: build.mutation({
       query(amount) {
@@ -25,20 +27,7 @@ const noStoreApi = createApi({
           body: qs.stringify(amount),
         };
       },
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        const { undo } = dispatch(
-          noStoreApi.util.updateQueryData("getNoStore", undefined, (draft) => {
-            Object.assign(draft, arg);
-          })
-        );
-
-        try {
-          await queryFulfilled;
-        } catch (err) {
-          console.log(err);
-          undo();
-        }
-      },
+      invalidatesTags: ['NoStore']
     }),
   }),
 });
