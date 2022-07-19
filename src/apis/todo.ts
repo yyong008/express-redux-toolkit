@@ -1,11 +1,21 @@
-import { api } from ".";
 import qs from "qs";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const noStoreApi = api.injectEndpoints({
+const todoApi = createApi({
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:9899",
+    prepareHeaders: (headers) => {
+      headers.set(
+        "Content-Type",
+        "application/x-www-form-urlencoded;charset=UTF-8"
+      );
+      return headers;
+    },
+  }),
   endpoints: (build) => ({
     getTodo: build.query({
       query: (id) => `/todo/${id}`,
-      transformResponse: (response: { data }) => response.data,
+      transformResponse: (response: any) => response.data,
     }),
     getTodos: build.query({
       query: () => "/todos",
@@ -21,7 +31,7 @@ const noStoreApi = api.injectEndpoints({
       },
       async onQueryStarted(arg, { dispatch, getState, queryFulfilled }) {
         const { undo } = dispatch(
-          api.util.updateQueryData("getTodos", "", (draft) => {
+          todoApi.util.updateQueryData("getTodos", "", (draft) => {
             draft.push(arg);
           })
         );
@@ -44,7 +54,7 @@ const noStoreApi = api.injectEndpoints({
       },
       async onQueryStarted(arg, { dispatch, getState, queryFulfilled }) {
         const { undo } = dispatch(
-          api.util.updateQueryData("getTodos", "", (draft) => {
+          todoApi.util.updateQueryData("getTodos", "", (draft) => {
 
             let index = 0
 
@@ -76,7 +86,7 @@ const noStoreApi = api.injectEndpoints({
       },
       async onQueryStarted(arg, { dispatch, getState, queryFulfilled }) {
         const { undo } = dispatch(
-          api.util.updateQueryData("getTodos", "", (draft) => {
+          todoApi.util.updateQueryData("getTodos", "", (draft) => {
             draft.forEach((i, ii) => {
               if (i.id === arg.id) {
                 draft[ii] = arg;
@@ -102,4 +112,4 @@ export const {
   useAddTodoMutation,
   useDelTodoMutation,
   useUpdateTodoMutation,
-} = noStoreApi;
+} = todoApi;

@@ -1,11 +1,21 @@
-import { api } from ".";
 import qs from "qs";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const noStoreApi = api.injectEndpoints({
+const noStoreApi = createApi({
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:9899",
+    prepareHeaders: (headers) => {
+      headers.set(
+        "Content-Type",
+        "application/x-www-form-urlencoded;charset=UTF-8"
+      );
+      return headers;
+    },
+  }),
   endpoints: (build) => ({
     getNoStore: build.query({
       query: () => "query-nostore",
-      transformResponse: (response: { data }) => response.data,
+      transformResponse: (response: any) => response.data,
     }),
     setNoStore: build.mutation({
       query(amount) {
@@ -15,12 +25,9 @@ const noStoreApi = api.injectEndpoints({
           body: qs.stringify(amount),
         };
       },
-      async onQueryStarted(
-        arg,
-        { dispatch, getState, queryFulfilled }
-      ) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const { undo } = dispatch(
-          api.util.updateQueryData("getNoStore", undefined, (draft) => {
+          noStoreApi.util.updateQueryData("getNoStore", undefined, (draft) => {
             Object.assign(draft, arg);
           })
         );
