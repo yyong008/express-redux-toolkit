@@ -1,18 +1,7 @@
 import qs from "qs";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { api } from "./api";
 
-export const todoApi = createApi({
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:9899",
-    prepareHeaders: (headers) => {
-      headers.set(
-        "Content-Type",
-        "application/x-www-form-urlencoded;charset=UTF-8"
-      );
-      return headers;
-    },
-  }),
-  tagTypes: ["Todo"],
+export const todoApi = api.injectEndpoints({
   endpoints: (build) => ({
     getTodo: build.query({
       query: (id) => `/todo/${id}`,
@@ -20,7 +9,7 @@ export const todoApi = createApi({
     }),
     getTodos: build.query({
       query: () => "/todos",
-      providesTags: ['Todo']
+      providesTags: ["Todo"],
     }),
     addTodo: build.mutation({
       query(todo) {
@@ -30,7 +19,7 @@ export const todoApi = createApi({
           body: qs.stringify(todo),
         };
       },
-      async onQueryStarted(arg, { dispatch, getState, queryFulfilled }) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const { undo } = dispatch(
           todoApi.util.updateQueryData("getTodos", "", (draft) => {
             draft.push(arg);
@@ -44,31 +33,29 @@ export const todoApi = createApi({
           undo();
         }
       },
-      invalidatesTags: ['Todo']
+      invalidatesTags: ["Todo"],
     }),
     delTodo: build.mutation({
-      query(todo) {
+      query(todo: any) {
         return {
           url: `/todo/${todo.id}`,
           method: "DELETE",
           body: qs.stringify(todo),
         };
       },
-      async onQueryStarted(arg, { dispatch, getState, queryFulfilled }) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const { undo } = dispatch(
           todoApi.util.updateQueryData("getTodos", "", (draft) => {
+            let index = 0;
 
-            let index = 0
-
-            draft.forEach((item, i) => { 
+            draft.forEach((item: any, i: number) => {
               if (item.id === arg.id) {
-                index = i
-            }
-
-          });
-          draft.splice(index, 1);
-        }
-        ))
+                index = i;
+              }
+            });
+            draft.splice(index, 1);
+          })
+        );
 
         try {
           await queryFulfilled;
@@ -77,7 +64,7 @@ export const todoApi = createApi({
           undo();
         }
       },
-      invalidatesTags: ['Todo']
+      invalidatesTags: ["Todo"],
     }),
     updateTodo: build.mutation({
       query(todo) {
@@ -90,7 +77,7 @@ export const todoApi = createApi({
       async onQueryStarted(arg, { dispatch, getState, queryFulfilled }) {
         const { undo } = dispatch(
           todoApi.util.updateQueryData("getTodos", "", (draft) => {
-            draft.forEach((i, ii) => {
+            draft.forEach((i: any, ii: number) => {
               if (i.id === arg.id) {
                 draft[ii] = arg;
               }
@@ -105,7 +92,7 @@ export const todoApi = createApi({
           undo();
         }
       },
-      invalidatesTags: ['Todo']
+      invalidatesTags: ["Todo"],
     }),
   }),
 });

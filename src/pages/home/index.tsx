@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function CreateItem() {
     const [updateNoStore, result] = useSetNoStoreMutation();
 
-    const onSubmit = async (e) => {
+    const onSubmit = async (e: any) => {
         e.preventDefault();
         const { target } = e;
         await updateNoStore({

@@ -1,23 +1,12 @@
 import qs from "qs";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { api } from "./api";
 
-export const noStoreApi = createApi({
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:9899",
-    prepareHeaders: (headers) => {
-      headers.set(
-        "Content-Type",
-        "application/x-www-form-urlencoded;charset=UTF-8"
-      );
-      return headers;
-    },
-  }),
-  tagTypes: ['NoStore'],
+export const noStoreApi = api.injectEndpoints({
   endpoints: (build) => ({
     getNoStore: build.query({
       query: () => "query-nostore",
       transformResponse: (response: any) => response.data,
-      providesTags: ['NoStore']
+      providesTags: ["NoStore"],
     }),
     setNoStore: build.mutation({
       query(amount) {
@@ -27,7 +16,7 @@ export const noStoreApi = createApi({
           body: qs.stringify(amount),
         };
       },
-      invalidatesTags: ['NoStore']
+      invalidatesTags: ["NoStore"],
     }),
   }),
 });
