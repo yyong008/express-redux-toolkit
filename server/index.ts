@@ -13,7 +13,7 @@ app.use(
     index: false,
   })
 );
-                                                      
+
 app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
@@ -31,6 +31,16 @@ app.get("/todos", todoCtrs.getTodos);
 app.post("/todo", todoCtrs.addTodo);
 app.put("/todo/:id", todoCtrs.updateTodo);
 app.delete("/todo/:id", todoCtrs.delTodo);
+
+app.get("/thunk/tslice/info", (_, res) => {
+  res.status(200).json({
+    message: "Success",
+    code: 0,
+    data: {
+      name: "xiaoming",
+    },
+  });
+});
 
 app.listen(9899, () => {
   console.info(`===> api server is running at http://localhost:9899`);

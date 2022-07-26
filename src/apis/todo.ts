@@ -4,7 +4,7 @@ import { api } from "./api";
 export const todoApi = api.injectEndpoints({
   endpoints: (build) => ({
     getTodo: build.query({
-      query: (id) => `/todo/${id}`,
+      query: (id: any) => `/todo/${id}`,
       transformResponse: (response: any) => response.data,
     }),
     getTodos: build.query({
@@ -74,7 +74,7 @@ export const todoApi = api.injectEndpoints({
           body: qs.stringify(todo),
         };
       },
-      async onQueryStarted(arg, { dispatch, getState, queryFulfilled }) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const { undo } = dispatch(
           todoApi.util.updateQueryData("getTodos", "", (draft) => {
             draft.forEach((i: any, ii: number) => {
